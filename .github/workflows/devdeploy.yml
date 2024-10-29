@@ -1,0 +1,28 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 208673553352.dkr.ecr.us-east-1.amazonaws.com
+      - name: Build and push Docker image
+        run: |
+          docker build -t api-dev-image:latest .
+          docker tag api-dev-image:latest 208673553352.dkr.ecr.us-east-1.amazonaws.com/artistory-api-dev:latest
+          docker push 208673553352.dkr.ecr.us-east-1.amazonaws.com/artistory-api-dev:latest
+      - name: Deploy to AWS ECS
+        run: |
+          aws ecs update-service --cluster artistory-dev --service artistory-api-dev --force-new-deployment

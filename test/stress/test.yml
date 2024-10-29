@@ -1,0 +1,14 @@
+config:
+  target: 'http://localhost:8080'
+  phases:
+    - name: 'warm up'
+      duration: 1
+      arrivalRate: 1
+  processor: './processor.js'
+scenarios:
+  - flow:
+      - get:
+          url: '/home/brackhits'
+          qs:
+            date: '{{ timestamp }}'
+

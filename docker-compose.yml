@@ -1,0 +1,76 @@
+#release 220617
+version: '3.4'
+
+services:
+#  rabbitmq:
+#    image: rabbitmq:3.11-management
+#    restart: always
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+
+  hum-api:
+    image: 208673553352.dkr.ecr.us-east-1.amazonaws.com/hum-api-${DEPLOY_ENV}-registry:latest
+    # build:
+    #     context: .
+    environment:
+      # define these values in a local .env file with the same keys
+      DB_HOST: ${DB_HOST}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PORT: ${DB_PORT}
+      ONE_SIGNAL_API_KEY: ${ONE_SIGNAL_API_KEY}
+      ONE_SIGNAL_APP_ID: ${ONE_SIGNAL_APP_ID}
+      ONE_SIGNAL_API_BASE_URL: ${ONE_SIGNAL_API_BASE_URL}
+      S3_REGION: ${S3_REGION}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      SPOTIFY_CLIENT_ID: ${SPOTIFY_CLIENT_ID}
+      SPOTIFY_SECRET: ${SPOTIFY_SECRET}
+      SPOTIFY_SECRET_KEY: ${SPOTIFY_SECRET_KEY}
+      NODE_ENV: ${NODE_ENV}
+      CRON_ENV: ${CRON_ENV}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+      COGNITO_MY_ARTISTORY_POOL: ${COGNITO_MY_ARTISTORY_POOL}
+      COGNITO_CLIENT_ID: ${COGNITO_CLIENT_ID}
+      FACEBOOK_PIXEL_ID: ${FACEBOOK_PIXEL_ID}
+      FACEBOOK_CONVERSION_API_ACCESS_TOKEN: ${FACEBOOK_CONVERSION_API_ACCESS_TOKEN}
+      RABBITMQ_URI: ${RABBITMQ_URI}
+      APPLE_REVOKE_TOKEN: ${APPLE_REVOKE_TOKEN}
+      APPLE_MUSIC_KEY_ID: ${APPLE_MUSIC_KEY_ID}
+      APPLE_MUSIC_TEAM_ID: ${APPLE_MUSIC_TEAM_ID}
+      APPLE_MUSIC_SECRET: ${APPLE_MUSIC_SECRET}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY}
+      VIMEO_ACCESS_TOKEN: ${VIMEO_ACCESS_TOKEN}
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-1
+        awslogs-group: ec2/hum-api-${DEPLOY_ENV}
+        awslogs-create-group: 'true'
+        awslogs-datetime-format: '\[%b %d, %Y %H:%M:%S\]'
+
+  # check/pull latest image from AWS ECR every 30 minutes
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/config.json
+      - helper:/go/bin
+      - ~/.aws/credentials:/.aws/credentials
+    environment:
+      - HOME=/
+      - PATH=$PATH:/go/bin
+    command: --interval 1800 --cleanup # check for new image every 30 minutes
+volumes:
+  helper:
+    external: true
+

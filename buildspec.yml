@@ -1,0 +1,35 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Installing Mocha...
+      - npm install -g mocha
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Compiling the Node.js code
+  post_build:
+    commands:
+      - echo Build completed on `date`
+# Include only the files required for your application to run.
+artifacts:
+  files:
+    - index.js
+    - package.json
+    - node_modules/**/*
+    - appspec.yml
+    - codedeploy/*
+    - Controllers/*
+    - database/*
+    - models/*
+    - Queries/*
+    - routes/*
+    - schemas/*
+    - .env
+    - Tools.js

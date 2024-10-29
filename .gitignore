@@ -1,0 +1,9 @@
+node_modules
+.env
+.env.*
+.env.staging
+.DS_Store
+packages.microsoft.gpg
+config.tfvars
+secrets.tfvars
+dist

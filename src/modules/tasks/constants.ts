@@ -1,0 +1,1 @@
+export const BRACKHIT_CHALLENGE_TOP_USERS = 3;

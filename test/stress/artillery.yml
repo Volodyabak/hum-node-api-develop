@@ -1,0 +1,36 @@
+config:
+  target: http://localhost:8080
+  processor: 'processor.js'
+  phases:
+    - duration: 1
+      arrivalRate: 1
+      name: 'warm up'
+#    - duration: 300
+#      arrivalRate: 10
+#      name: 'ramp up'
+  variables:
+    token:
+      - 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiM2I5MDAwNi05ZWQ1LTQ0MWEtOWFiNi01NGI3OTMyMTM1ZjciLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.l8AIj3de9sm-TPKC5QlHydvuoFwvgkajgVF5ns4cdjA'
+scenarios:
+  - flow:
+      - get:
+          url: '/home/brackhits?date={{timestamp}}'
+          headers:
+            Authorization: '{{ token }}'
+      - log: 'Time is {{ timestamp }}'
+#      - get:
+#          url: '/feed'
+#          headers:
+#            Authorization: '{{ token }}'
+#      - get:
+#          url: '/user/getMe'
+#          headers:
+#            Authorization: '{{ token }}'
+#      - get:
+#          url: '/notifications/user-devices'
+#          headers:
+#            Authorization: '{{ token }}'
+#      - get:
+#          url: '/user/friend-requests'
+#          headers:
+#            Authorization: '{{ token }}'

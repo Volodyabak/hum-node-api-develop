@@ -1,0 +1,22 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/hum-node-api/
+hooks:
+  BeforeInstall:
+    - location: codedeploy/before_install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: codedeploy/after_install.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: codedeploy/app_start.sh
+      timeout: 300
+      runas: ubuntu
+  ApplicationStop:
+    - location: codedeploy/app_stop.sh
+      timeout: 300
+      runas: ubuntu
